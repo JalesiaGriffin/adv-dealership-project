@@ -1,4 +1,4 @@
-package com.yearup.dealership;
+package com.pluralsight;
 
 public class Vehicle {
     private int vin;
