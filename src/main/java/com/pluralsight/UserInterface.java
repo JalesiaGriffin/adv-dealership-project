@@ -16,7 +16,7 @@ public class UserInterface {
         init();
         boolean quit = false;
         while (!quit) {
-            System.out.println("---------- Menu ----------");
+            System.out.println("\n---------- Menu ----------");
             System.out.println("1. Get vehicles by price");
             System.out.println("2. Get vehicles by make and model");
             System.out.println("3. Get vehicles by year");
@@ -26,6 +26,7 @@ public class UserInterface {
             System.out.println("7. Get all vehicles");
             System.out.println("8. Add vehicle");
             System.out.println("9. Remove vehicle");
+            System.out.println("10. Create Contract");
             System.out.println("99. Quit");
 
             System.out.print("Enter your choice: ");
@@ -59,6 +60,9 @@ public class UserInterface {
                 case "9":
                     processRemoveVehicleRequest();
                     break;
+                case "10":
+                    processCreateContract();
+                    break;
                 case "99":
                     quit = true;
                     break;
@@ -69,6 +73,7 @@ public class UserInterface {
     }
 
     public void processGetByPriceRequest() {
+        System.out.println("\nVehicle by Price");
         System.out.print("Enter minimum price: ");
         double min = scanner.nextDouble();
         System.out.print("Enter maximum price: ");
@@ -78,6 +83,7 @@ public class UserInterface {
     }
 
     public void processGetByMakeModelRequest() {
+        System.out.println("\nVehicle by Make & Model");
         System.out.print("Enter make: ");
         String make = scanner.nextLine();
         System.out.print("Enter model: ");
@@ -87,6 +93,7 @@ public class UserInterface {
     }
 
     public void processGetByYearRequest() {
+        System.out.println("\nVehicle by Year");
         System.out.print("Enter minimum year: ");
         int min = scanner.nextInt();
         System.out.print("Enter maximum year: ");
@@ -96,6 +103,7 @@ public class UserInterface {
     }
 
     public void processGetByColorRequest() {
+        System.out.println("\nVehicle by Color");
         System.out.print("Enter color: ");
         String color = scanner.nextLine();
         List<Vehicle> vehicles = dealership.getVehiclesByColor(color);
@@ -103,6 +111,7 @@ public class UserInterface {
     }
 
     public void processGetByMileageRequest() {
+        System.out.println("\nVehicle by Mileage");
         System.out.print("Enter minimum mileage: ");
         int min = scanner.nextInt();
         System.out.print("Enter maximum mileage: ");
@@ -112,6 +121,7 @@ public class UserInterface {
     }
 
     public void processGetByVehicleTypeRequest() {
+        System.out.println("Vehicle by Type");
         System.out.print("Enter vehicle type: ");
         String vehicleType = scanner.nextLine();
         List<Vehicle> vehicles = dealership.getVehiclesByType(vehicleType);
@@ -119,11 +129,13 @@ public class UserInterface {
     }
 
     public void processGetAllVehiclesRequest() {
+        System.out.println("\nAll Vehicles");
         List<Vehicle> vehicles = dealership.getAllVehicles();
         displayVehicles(vehicles);
     }
 
     public void processAddVehicleRequest() {
+        System.out.println("\nAdd Vehicle");
         System.out.print("Enter vehicle vin: ");
         int vin = scanner.nextInt();
         scanner.nextLine();
@@ -161,6 +173,7 @@ public class UserInterface {
     }
 
     public void processRemoveVehicleRequest() {
+        System.out.println("\nRemove Vehicle");
         System.out.print("Enter the VIN of the vehicle you wish to remove: ");
         int vin = scanner.nextInt();
 
@@ -194,4 +207,75 @@ public class UserInterface {
         }
     }
 
+    private void processCreateContract(){
+        List<Vehicle> vehicles = dealership.getAllVehicles();
+
+        System.out.println("\nCreate Contract");
+        System.out.print("Enter Contract Type: ");
+        String type = scanner.nextLine();
+
+        System.out.print("Enter date: ");
+        String date = scanner.nextLine();
+
+        System.out.print("Enter customer name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter customer email: ");
+        String email = scanner.nextLine();
+
+        System.out.print("Enter Vehicle vin: ");
+        int vin = scanner.nextInt();
+        scanner.nextLine();
+
+            //Get Vehicle
+            boolean found = false;
+            Vehicle vehicle = null;
+            for (Vehicle v: vehicles){
+                if (v.getVin() == vin){
+                    vehicle = v;
+                    found = true;
+                    break;
+                }
+            } if (!found) {
+                System.out.println("\ninvalid vin");
+            }
+
+            // Lease Contract Section
+            if (type.equalsIgnoreCase("lease")){
+                LeaseContract contract = new LeaseContract(date, name, email, vehicle);
+
+                // Save Contract
+                ContractFileManager cfm = new ContractFileManager();
+                cfm.saveContract(contract);
+            }
+
+
+            // Sale Contract Section
+            else if (type.equalsIgnoreCase("sale")){
+                System.out.print("Will this vehicle be financed? ");
+                String financeOption = scanner.nextLine();
+                boolean isFinanced = false;
+
+                // Check if Vehicle is financed
+                if(financeOption.equalsIgnoreCase("yes")){
+                    isFinanced = true;
+                }
+
+                SalesContract contract =  new SalesContract(date, name, email, vehicle, isFinanced);
+
+                // Save Contract
+                ContractFileManager cfm = new ContractFileManager();
+                cfm.saveContract(contract);
+
+            } else {
+                System.out.println("invalid input.");
+            }
+
+           // Remove Vehicle
+            processRemoveVehicleRequest();
+
+            // Update Dealership
+            DealershipFileManager dfm = new DealershipFileManager();
+            dfm.saveDealership(dealership);
+    }
 }
