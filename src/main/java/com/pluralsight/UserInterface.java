@@ -33,41 +33,18 @@ public class UserInterface {
             String choice = scanner.nextLine();
 
             switch (choice) {
-                case "1":
-                    processGetByPriceRequest();
-                    break;
-                case "2":
-                    processGetByMakeModelRequest();
-                    break;
-                case "3":
-                    processGetByYearRequest();
-                    break;
-                case "4":
-                    processGetByColorRequest();
-                    break;
-                case "5":
-                    processGetByMileageRequest();
-                    break;
-                case "6":
-                    processGetByVehicleTypeRequest();
-                    break;
-                case "7":
-                    processGetAllVehiclesRequest();
-                    break;
-                case "8":
-                    processAddVehicleRequest();
-                    break;
-                case "9":
-                    processRemoveVehicleRequest();
-                    break;
-                case "10":
-                    processCreateContract();
-                    break;
-                case "99":
-                    quit = true;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case "1" -> processGetByPriceRequest();
+                case "2" -> processGetByMakeModelRequest();
+                case "3" -> processGetByYearRequest();
+                case "4" -> processGetByColorRequest();
+                case "5" -> processGetByMileageRequest();
+                case "6" -> processGetByVehicleTypeRequest();
+                case "7" -> processGetAllVehiclesRequest();
+                case "8" -> processAddVehicleRequest();
+                case "9" -> processRemoveVehicleRequest();
+                case "10" -> processCreateContract();
+                case "99" -> quit = true;
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
     }
@@ -207,6 +184,21 @@ public class UserInterface {
         }
     }
 
+    private Vehicle getVehicleSold(List<Vehicle> vehicles, int vin){
+        boolean found = false;
+        Vehicle vehicle = null;
+        for (Vehicle v: vehicles){
+            if (v.getVin() == vin){
+                vehicle = v;
+                found = true;
+                break;
+            }
+        } if (!found) {
+            System.out.println("\ninvalid vin");
+        }
+        return vehicle;
+    }
+
     private void processCreateContract(){
         List<Vehicle> vehicles = dealership.getAllVehicles();
 
@@ -228,51 +220,40 @@ public class UserInterface {
         scanner.nextLine();
 
             //Get Vehicle
-            boolean found = false;
-            Vehicle vehicle = null;
-            for (Vehicle v: vehicles){
-                if (v.getVin() == vin){
-                    vehicle = v;
-                    found = true;
-                    break;
-                }
-            } if (!found) {
-                System.out.println("\ninvalid vin");
+            Vehicle vehicle = getVehicleSold(vehicles, vin);
+
+            // Validate vin
+            while (vehicle == null){
+                System.out.print("Enter Vehicle vin: ");
+                vin = scanner.nextInt();
+                scanner.nextLine();
+                vehicle = getVehicleSold(vehicles, vin);
             }
 
             // Lease Contract Section
             if (type.equalsIgnoreCase("lease")){
                 LeaseContract contract = new LeaseContract(date, name, email, vehicle);
-
-                // Save Contract
                 ContractFileManager cfm = new ContractFileManager();
                 cfm.saveContract(contract);
             }
-
 
             // Sale Contract Section
             else if (type.equalsIgnoreCase("sale")){
                 System.out.print("Will this vehicle be financed? ");
                 String financeOption = scanner.nextLine();
-                boolean isFinanced = false;
+                boolean isFinanced = financeOption.equalsIgnoreCase("yes");
 
-                // Check if Vehicle is financed
-                if(financeOption.equalsIgnoreCase("yes")){
-                    isFinanced = true;
-                }
 
                 SalesContract contract =  new SalesContract(date, name, email, vehicle, isFinanced);
-
-                // Save Contract
                 ContractFileManager cfm = new ContractFileManager();
                 cfm.saveContract(contract);
 
             } else {
-                System.out.println("invalid input.");
+                System.out.println("failed to create contract.");
             }
 
-           // Remove Vehicle
-            processRemoveVehicleRequest();
+            // Remove Vehicle
+            dealership.removeVehicle(vehicle);
 
             // Update Dealership
             DealershipFileManager dfm = new DealershipFileManager();
