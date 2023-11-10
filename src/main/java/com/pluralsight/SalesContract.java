@@ -6,7 +6,7 @@ public class SalesContract extends Contract{
     private int processingFee;
     private boolean finance;
 
-    public SalesContract(String date, String name, String email, Vehicle vehicle, int processingFee, boolean finance) {
+    public SalesContract(String date, String name, String email, Vehicle vehicle, boolean finance) {
         super(date, name, email, vehicle);
         this.salesTaxAmount = 0.05;
         this.recordingFee = 100;
@@ -31,11 +31,7 @@ public class SalesContract extends Contract{
     }
 
     public int getProcessingFee() {
-        if (getVehicle().getPrice() < 10000){
-            processingFee = 295;
-        } else {
-            processingFee = 495;
-        }
+        processingFee = (getVehicle().getPrice() < 10000)? 295: 495;
         return processingFee;
     }
 
@@ -77,5 +73,5 @@ public class SalesContract extends Contract{
             return 0.0;
         }
     }
-    
+
 }
