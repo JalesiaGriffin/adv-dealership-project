@@ -13,17 +13,15 @@ public class ContractFileManager {
                 contract.getVehicle().getVehicleType(), contract.getVehicle().getColor(), contract.getVehicle().getOdometer(), contract.getVehicle().getPrice()));
 
             // Lease instance attributes
-            if (contract instanceof LeaseContract){
-                writer.write(String.format("%s|%s|%s|%s", ((LeaseContract) contract).getExpectedEndingValue(),  ((LeaseContract) contract).getLeaseFee(), ((LeaseContract)contract).getTotalPrice(),
-                        ((LeaseContract)contract).getMonthlyPayment()));
+            if (contract instanceof LeaseContract lease){
+                writer.write(String.format("%s|%s|%s|%s", lease.getExpectedEndingValue(),  lease.getLeaseFee(), lease.getTotalPrice(), lease.getMonthlyPayment()));
                 writer.newLine();
             }
 
             // Sale instance attributes
-            else if (contract instanceof SalesContract){
-                String finance = ((SalesContract) contract).isFinance()? "YES":"NO";
-                writer.write(String.format( "%s|%s|%s|%s|%s|%s", ((SalesContract) contract).getSalesTaxAmount(), ((SalesContract) contract).getRecordingFee(),
-                    ((SalesContract) contract).getProcessingFee(), ((SalesContract) contract).getTotalPrice(), finance, ((SalesContract)contract).getMonthlyPayment()));
+            else if (contract instanceof SalesContract sale){
+                String finance = sale.isFinance()? "YES":"NO";
+                writer.write(String.format( "%s|%s|%s|%s|%s|%s", sale.getSalesTaxAmount(), sale.getRecordingFee(), sale.getProcessingFee(), sale.getTotalPrice(), finance, sale.getMonthlyPayment()));
                 writer.newLine();
             }
         } catch (IOException e){
