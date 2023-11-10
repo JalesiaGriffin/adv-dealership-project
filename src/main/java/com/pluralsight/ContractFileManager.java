@@ -8,6 +8,7 @@ public class ContractFileManager {
             String type = (contract instanceof LeaseContract)? "LEASE":"SALE";
 
             // Shared attributes
+            writer.newLine();
             writer.write(String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|", type, contract.getDate(), contract.getName(), contract.getEmail(),
                 contract.getVehicle().getVin(), contract.getVehicle().getYear(), contract.getVehicle().getMake(), contract.getVehicle().getModel(),
                 contract.getVehicle().getVehicleType(), contract.getVehicle().getColor(), contract.getVehicle().getOdometer(), contract.getVehicle().getPrice()));
@@ -15,14 +16,12 @@ public class ContractFileManager {
             // Lease instance attributes
             if (contract instanceof LeaseContract lease){
                 writer.write(String.format("%s|%s|%s|%s", lease.getExpectedEndingValue(),  lease.getLeaseFee(), lease.getTotalPrice(), lease.getMonthlyPayment()));
-                writer.newLine();
             }
 
             // Sale instance attributes
             else if (contract instanceof SalesContract sale){
                 String finance = sale.isFinance()? "YES":"NO";
                 writer.write(String.format( "%s|%s|%s|%s|%s|%s", sale.getSalesTaxAmount(), sale.getRecordingFee(), sale.getProcessingFee(), sale.getTotalPrice(), finance, sale.getMonthlyPayment()));
-                writer.newLine();
             }
         } catch (IOException e){
             e.printStackTrace();
