@@ -201,6 +201,7 @@ public class UserInterface {
 
     private void processCreateContract(){
         List<Vehicle> vehicles = dealership.getAllVehicles();
+        Vehicle vehicle = null;
 
         System.out.println("\nCreate Contract");
         System.out.print("Enter Contract Type: ");
@@ -215,20 +216,12 @@ public class UserInterface {
         System.out.print("Enter customer email: ");
         String email = scanner.nextLine();
 
-        System.out.print("Enter Vehicle vin: ");
-        int vin = scanner.nextInt();
-        scanner.nextLine();
-
-            //Get Vehicle
-            Vehicle vehicle = getVehicleSold(vehicles, vin);
-
-            // Validate vin
-            while (vehicle == null){
-                System.out.print("Enter Vehicle vin: ");
-                vin = scanner.nextInt();
-                scanner.nextLine();
-                vehicle = getVehicleSold(vehicles, vin);
-            }
+        do { // validate vin
+            System.out.print("Enter vehicle vin: ");
+            int vin = scanner.nextInt();
+            scanner.nextLine();
+            vehicle = getVehicleSold(vehicles, vin);
+        } while (vehicle == null);
 
             // Lease Contract Section
             if (type.equalsIgnoreCase("lease")){
@@ -242,7 +235,6 @@ public class UserInterface {
                 System.out.print("Will this vehicle be financed? ");
                 String financeOption = scanner.nextLine();
                 boolean isFinanced = financeOption.equalsIgnoreCase("yes");
-
 
                 SalesContract contract =  new SalesContract(date, name, email, vehicle, isFinanced);
                 ContractFileManager cfm = new ContractFileManager();
