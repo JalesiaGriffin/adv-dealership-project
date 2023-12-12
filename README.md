@@ -83,6 +83,7 @@ In your terminal, navigate to the directory where you'll keep the project and cl
 - Supports multiple dealerships with all contracts stored in the same file.
 
 ## Demo
+![demo](imgs/demo.gif)
 
 ## Contribution:
 
